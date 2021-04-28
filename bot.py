@@ -1,9 +1,9 @@
-import discord, os
+import discord, os, random
 from discord.ext import commands
 
 intents = discord.Intents.default()
 intents.members = True
-client = commands.Bot(command_prefix = '/',intents=intents)
+client = commands.Bot(command_prefix = ',',intents=intents)
 
 def read_token():
     with open("token.txt","r") as f:
@@ -22,6 +22,17 @@ async def on_guild_join(guild):
     guildFile.close()
     print(f'File \'{guild.id}.txt\' created for \'{guild}\'')  
 
+@client.command()
+async def scramble(ctx, *, message):
+    alpha = " abcdefghijklmnopqrstuvwxyz"
+    newMessage = ""
+    for letter in message:
+        chance = random.randint(0,9)
+        if chance == 0:
+            letter = alpha[random.randint(0,26)]
+        newMessage += letter
+    await ctx.send(f'{newMessage}')
+                 
 @client.command()
 async def say(ctx, *, statement):
     await ctx.send(f'{statement}')
@@ -46,7 +57,7 @@ async def reload(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     print(f'Reloaded {extension}')
     
-for filename in os.listdir('./cogs'):
+for filename in os.listdir(path='cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
         
